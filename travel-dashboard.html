@@ -384,13 +384,12 @@
         </main>
 
         <footer>
-            <div>Data powered by OpenWeatherMap. Replace <code>YOUR_OPENWEATHER_API_KEY</code> when wiring up.</div>
+            <div>Data powered by OpenWeatherMap. Configure <code>OPENWEATHER_API_KEY</code> in Netlify.</div>
         </footer>
     </div>
 
     <script>
-        const OPEN_WEATHER_KEY = "YOUR_OPENWEATHER_API_KEY";
-        const MAUI_QUERY = "Maui,HI,US";
+        const MAUI_COORDS = { lat: 20.7984, lon: -156.3319 };
         const MAUI_TIMEZONE = "Pacific/Honolulu";
 
         const mauiTime = document.getElementById("maui-time");
@@ -437,19 +436,9 @@
             localTime.textContent = `${formatTime(now, timeZone)} • ${formatDate(now, timeZone)}`;
         };
 
-        const fetchWeatherByQuery = async (query) => {
-            const response = await fetch(
-                `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(query)}&units=imperial&appid=${OPEN_WEATHER_KEY}`
-            );
-            if (!response.ok) {
-                throw new Error("Weather request failed");
-            }
-            return response.json();
-        };
-
         const fetchWeatherByCoords = async (lat, lon) => {
             const response = await fetch(
-                `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${OPEN_WEATHER_KEY}`
+                `/.netlify/functions/weather?lat=${lat}&lon=${lon}`
             );
             if (!response.ok) {
                 throw new Error("Weather request failed");
@@ -468,7 +457,7 @@
 
         const loadMauiWeather = async () => {
             try {
-                const data = await fetchWeatherByQuery(MAUI_QUERY);
+                const data = await fetchWeatherByCoords(MAUI_COORDS.lat, MAUI_COORDS.lon);
                 applyWeather(data, mauiTemp, mauiCondition, mauiHumidity);
             } catch (error) {
                 mauiCondition.textContent = "Waiting for API key";
