@@ -3,75 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netlify Demo</title>
+    <title>Netlify Demo | POC Table of Contents</title>
     <style>
+        :root {
+            --bg-1: #667eea;
+            --bg-2: #764ba2;
+            --ink: #ffffff;
+            --ink-soft: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.12);
+            --card-border: rgba(255, 255, 255, 0.22);
+            --accent: #fbd38d;
+            --shadow: 0 20px 40px rgba(20, 10, 40, 0.25);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+            color: var(--ink);
+            background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .page {
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
+        }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(14px);
+            background: rgba(30, 18, 55, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
         }
-        .container {
-            text-align: center;
-            padding: 2rem;
-            max-width: 600px;
-        }
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+
+        .brand {
             font-weight: 700;
+            letter-spacing: 0.4px;
         }
-        p {
-            font-size: 1.25rem;
-            opacity: 0.9;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-        .badge {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.875rem;
-            margin-bottom: 2rem;
-        }
-        .links {
+
+        .nav-links {
             display: flex;
             gap: 1rem;
-            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a {
+            padding: 0.4rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 4rem;
+            width: 100%;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.18);
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 3.5vw, 3.5rem);
+            margin: 0.75rem 0;
+            line-height: 1.05;
+        }
+
+        .hero p {
+            color: var(--ink-soft);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .hero-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.75rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-card h3 {
+            margin-bottom: 0.6rem;
+        }
+
+        .hero-card ul {
+            list-style: none;
+            display: grid;
+            gap: 0.5rem;
+            color: var(--ink-soft);
+            font-size: 0.95rem;
+        }
+
+        .toc {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
         }
-        a {
-            color: white;
-            text-decoration: none;
-            padding: 0.75rem 1.5rem;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 8px;
-            transition: all 0.2s;
+
+        .toc h2 {
+            font-size: 1.6rem;
         }
-        a:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.5);
+
+        .filter {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.5rem 0.9rem;
+            border-radius: 999px;
+        }
+
+        .filter input {
+            border: none;
+            background: transparent;
+            color: var(--ink);
+            outline: none;
+            font-size: 0.95rem;
+            width: 180px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.4rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 1.4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            min-height: 230px;
+            transition: transform 0.2s ease, border 0.2s ease, background 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.45);
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+        }
+
+        .card p {
+            color: var(--ink-soft);
+            line-height: 1.5;
+            font-size: 0.98rem;
+        }
+
+        .tag {
+            align-self: flex-start;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #111827;
+            background: var(--accent);
+            padding: 0.25rem 0.55rem;
+            border-radius: 999px;
+        }
+
+        .cta {
+            margin-top: auto;
+            display: inline-flex;
+            gap: 0.6rem;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        footer {
+            padding: 2rem 1.5rem 3rem;
+            text-align: center;
+            color: var(--ink-soft);
+        }
+
+        .muted {
+            color: var(--ink-soft);
+            font-size: 0.9rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 720px) {
+            .nav-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .filter input {
+                width: 140px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="badge">🚀 Powered by Netlify</div>
-        <h1>Netlify Demo</h1>
-        <p>A simple landing page deployed with Netlify. Fast, secure, and globally distributed at the edge.</p>
-        <div class="links">
-            <a href="https://docs.netlify.com" target="_blank">Netlify Docs</a>
-            <a href="https://github.com/jarvis-response/netlify-demo" target="_blank">View Source</a>
-        </div>
+    <div class="page">
+        <nav class="nav">
+            <div class="nav-inner">
+                <div class="brand">Netlify Demo</div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="travel-dashboard.html">Travel Dashboard</a>
+                    <a href="business-card.html">Business Card</a>
+                    <a href="api-playground.html">API Playground</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <section class="hero">
+                <div>
+                    <span class="badge">Table of Contents • 5 POCs</span>
+                    <h1>Explore the Netlify Proofs of Concept</h1>
+                    <p>
+                        This homepage is your launchpad. Each link below opens a functional POC showcasing
+                        Netlify-friendly frontend patterns with vanilla HTML, CSS, and JavaScript.
+                    </p>
+                </div>
+                <div class="hero-card">
+                    <h3>What you can do here</h3>
+                    <ul>
+                        <li>Jump directly into a POC with a single click.</li>
+                        <li>Use the quick filter to find a page fast.</li>
+                        <li>Preview the purpose of each page before opening it.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <section class="toc">
+                <h2>Table of Contents</h2>
+                <label class="filter" for="filter-input">
+                    <span class="muted">Quick filter</span>
+                    <input id="filter-input" type="text" placeholder="Search POCs" />
+                </label>
+            </section>
+
+            <section class="grid" id="toc-grid">
+                <a class="card" href="travel-dashboard.html" data-title="travel dashboard" data-tags="time weather location">
+                    <span class="tag">POC 01</span>
+                    <h3>Travel Dashboard</h3>
+                    <p>Track Maui time, local weather, and your current location in one friendly dashboard.</p>
+                    <span class="cta">Open dashboard →</span>
+                </a>
+
+                <a class="card" href="business-card.html" data-title="digital business card" data-tags="contact social location">
+                    <span class="tag">POC 02</span>
+                    <h3>Digital Business Card</h3>
+                    <p>Showcase links, social handles, and a geolocation-based “currently in” status.</p>
+                    <span class="cta">Open card →</span>
+                </a>
+
+                <a class="card" href="api-playground.html" data-title="api playground" data-tags="netlify functions testing">
+                    <span class="tag">POC 03</span>
+                    <h3>API Playground</h3>
+                    <p>Test Netlify Functions with a simple UI and see formatted JSON responses.</p>
+                    <span class="cta">Open playground →</span>
+                </a>
+
+                <a class="card" href="blog.html" data-title="minimalist blog" data-tags="blog markdown search">
+                    <span class="tag">POC 04</span>
+                    <h3>Minimalist Blog</h3>
+                    <p>Read clean, markdown-style posts with a lightweight search experience.</p>
+                    <span class="cta">Open blog →</span>
+                </a>
+
+                <a class="card" href="about.html" data-title="about page" data-tags="about netlify demo">
+                    <span class="tag">POC 05</span>
+                    <h3>About</h3>
+                    <p>Learn what this demo set is about and how the POCs fit together.</p>
+                    <span class="cta">Open about →</span>
+                </a>
+            </section>
+        </main>
+
+        <footer>
+            <div class="muted">Built for Netlify demos. All pages use vanilla HTML, CSS, and JavaScript.</div>
+        </footer>
     </div>
+
+    <script>
+        const filterInput = document.getElementById("filter-input");
+        const tocCards = Array.from(document.querySelectorAll("#toc-grid .card"));
+
+        const updateFilter = () => {
+            const query = filterInput.value.trim().toLowerCase();
+            tocCards.forEach((card) => {
+                const title = card.dataset.title || "";
+                const tags = card.dataset.tags || "";
+                const match = title.includes(query) || tags.includes(query);
+                card.style.display = match ? "flex" : "none";
+            });
+        };
+
+        filterInput.addEventListener("input", updateFilter);
+    </script>
 </body>
 </html>
