@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netlify Demo | API Playground</title>
+    <style>
+        :root {
+            --bg-1: #667eea;
+            --bg-2: #764ba2;
+            --ink: #ffffff;
+            --ink-soft: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.12);
+            --card-border: rgba(255, 255, 255, 0.22);
+            --accent: #fbd38d;
+            --shadow: 0 20px 40px rgba(20, 10, 40, 0.25);
+            --success: #8ef3c9;
+            --warning: #ffd59e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+            color: var(--ink);
+            background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(14px);
+            background: rgba(30, 18, 55, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+        }
+
+        .brand {
+            font-weight: 700;
+            letter-spacing: 0.4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a {
+            padding: 0.4rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 4rem;
+            width: 100%;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 3.3vw, 3.4rem);
+            line-height: 1.1;
+        }
+
+        .hero p {
+            color: var(--ink-soft);
+            margin-top: 0.9rem;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .hero-card {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            padding: 1.6rem;
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            display: grid;
+            gap: 0.6rem;
+        }
+
+        .hero-card span {
+            font-size: 0.88rem;
+            color: var(--ink-soft);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.4rem;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .panel h2 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .panel p {
+            color: var(--ink-soft);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .muted {
+            color: var(--ink-soft);
+            font-size: 0.9rem;
+        }
+
+        .builder {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .field {
+            display: grid;
+            gap: 0.4rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--ink-soft);
+        }
+
+        input,
+        select,
+        textarea {
+            background: rgba(14, 12, 32, 0.6);
+            color: var(--ink);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            padding: 0.7rem 0.9rem;
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            align-items: center;
+        }
+
+        button {
+            border: none;
+            border-radius: 999px;
+            padding: 0.7rem 1.4rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .primary {
+            background: var(--accent);
+            color: #1f1b2d;
+            box-shadow: 0 12px 24px rgba(18, 10, 40, 0.25);
+        }
+
+        .primary:hover {
+            transform: translateY(-1px);
+        }
+
+        .ghost {
+            background: rgba(255, 255, 255, 0.16);
+            color: var(--ink);
+        }
+
+        .response {
+            background: rgba(11, 8, 25, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 1rem;
+            min-height: 220px;
+            overflow: auto;
+            font-family: "JetBrains Mono", "Courier New", monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+        }
+
+        .pill {
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .pill.ok {
+            background: rgba(142, 243, 201, 0.2);
+            color: var(--success);
+            border: 1px solid rgba(142, 243, 201, 0.5);
+        }
+
+        .pill.warn {
+            background: rgba(255, 213, 158, 0.2);
+            color: var(--warning);
+            border: 1px solid rgba(255, 213, 158, 0.5);
+        }
+
+        .history {
+            display: grid;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .history-item {
+            padding: 0.8rem 0.9rem;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            display: grid;
+            gap: 0.25rem;
+        }
+
+        .history-item button {
+            align-self: flex-start;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .endpoint-list {
+            display: grid;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .endpoint {
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.9rem;
+            background: rgba(255, 255, 255, 0.1);
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .endpoint code {
+            font-family: "JetBrains Mono", "Courier New", monospace;
+            font-size: 0.9rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.18);
+            margin: 1.6rem 0;
+        }
+
+        footer {
+            padding: 2rem 1.5rem 3rem;
+            text-align: center;
+            color: var(--ink-soft);
+        }
+
+        @media (max-width: 720px) {
+            .nav-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .button-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <nav class="nav">
+            <div class="nav-inner">
+                <div class="brand">Netlify Demo</div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="travel-dashboard.html">Travel Dashboard</a>
+                    <a href="business-card.html">Business Card</a>
+                    <a href="api-playground.html">API Playground</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <section class="hero">
+                <div>
+                    <h1>API Playground</h1>
+                    <p>
+                        Kick the tires on Netlify Functions with a lightweight request builder. Pick a method,
+                        add parameters, and inspect formatted JSON responses with a running history.
+                    </p>
+                </div>
+                <div class="hero-card">
+                    <strong>Quick tips</strong>
+                    <span>Use GET for quick lookups and POST for JSON payloads.</span>
+                    <span>Responses are mocked for now, ready to swap in real functions.</span>
+                </div>
+            </section>
+
+            <section class="grid">
+                <div class="panel">
+                    <h2>Request Builder</h2>
+                    <p>Choose an endpoint, fill in inputs, and send a mock request.</p>
+                    <div class="divider"></div>
+                    <form class="builder" id="request-form">
+                        <div class="field">
+                            <label for="method">Method</label>
+                            <select id="method">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="endpoint">Endpoint</label>
+                            <select id="endpoint">
+                                <option value="/api/hello">/api/hello</option>
+                                <option value="/api/submit">/api/submit</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="name">Name (query)</label>
+                            <input id="name" type="text" placeholder="Ada Lovelace" />
+                        </div>
+                        <div class="field">
+                            <label for="region">Region (query)</label>
+                            <input id="region" type="text" placeholder="us-west" />
+                        </div>
+                        <div class="field">
+                            <label for="payload">Payload (JSON)</label>
+                            <textarea id="payload" placeholder='{"project": "Netlify demo", "priority": "high"}'></textarea>
+                        </div>
+                        <div class="button-row">
+                            <button class="primary" type="submit">Send Request</button>
+                            <button class="ghost" type="button" id="fill-example">Fill Example Payload</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="panel">
+                    <h2>Response Viewer</h2>
+                    <p>Formatted output from the latest request.</p>
+                    <div class="divider"></div>
+                    <div class="status" id="response-status">
+                        <span class="pill warn">Idle</span>
+                        <span>No requests yet.</span>
+                    </div>
+                    <div class="response" id="response-output">{
+  "status": "idle",
+  "message": "Send a request to see JSON here."
+}</div>
+                </div>
+            </section>
+
+            <section class="grid" style="margin-top: 1.6rem;">
+                <div class="panel">
+                    <h2>Example Endpoints</h2>
+                    <p>These are the available mocked Netlify Function routes.</p>
+                    <div class="endpoint-list">
+                        <div class="endpoint">
+                            <strong>GET</strong>
+                            <code>/api/hello?name=Ada&region=us-west</code>
+                            <span class="muted">Returns a friendly greeting and metadata.</span>
+                        </div>
+                        <div class="endpoint">
+                            <strong>POST</strong>
+                            <code>/api/submit</code>
+                            <span class="muted">Accepts a JSON payload and returns a receipt.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Request History</h2>
+                    <p>Review recent requests and reload the response.</p>
+                    <div class="history" id="history-list"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div>Built for Netlify demos. Responses are mocked in the browser.</div>
+        </footer>
+    </div>
+
+    <script>
+        const form = document.getElementById("request-form");
+        const methodInput = document.getElementById("method");
+        const endpointInput = document.getElementById("endpoint");
+        const nameInput = document.getElementById("name");
+        const regionInput = document.getElementById("region");
+        const payloadInput = document.getElementById("payload");
+        const responseOutput = document.getElementById("response-output");
+        const responseStatus = document.getElementById("response-status");
+        const historyList = document.getElementById("history-list");
+        const fillExample = document.getElementById("fill-example");
+
+        const history = [];
+
+        const examplePayload = {
+            project: "Netlify demo",
+            priority: "high",
+            tags: ["functions", "poc"],
+            owner: {
+                name: "Jamie",
+                team: "Frontend"
+            }
+        };
+
+        const mockHandlers = {
+            "GET /api/hello": (data) => ({
+                status: 200,
+                body: {
+                    message: `Hello ${data.name || "friend"}!`,
+                    region: data.region || "global",
+                    requestedAt: new Date().toISOString(),
+                    meta: {
+                        source: "mock",
+                        latencyMs: data.latency
+                    }
+                }
+            }),
+            "POST /api/submit": (data) => ({
+                status: 201,
+                body: {
+                    receiptId: `rcpt_${Math.random().toString(36).slice(2, 10)}`,
+                    accepted: true,
+                    payload: data.payload,
+                    queuedAt: new Date().toISOString()
+                }
+            })
+        };
+
+        const formatJson = (value) => JSON.stringify(value, null, 2);
+
+        const setStatus = (label, message, tone) => {
+            responseStatus.innerHTML = `
+                <span class="pill ${tone}">${label}</span>
+                <span>${message}</span>
+            `;
+        };
+
+        const renderHistory = () => {
+            historyList.innerHTML = "";
+            if (!history.length) {
+                historyList.innerHTML = "<span class=\"muted\">No requests yet.</span>";
+                return;
+            }
+
+            history.slice().reverse().forEach((item, index) => {
+                const wrapper = document.createElement("div");
+                wrapper.className = "history-item";
+                wrapper.innerHTML = `
+                    <strong>${item.method} ${item.endpoint}</strong>
+                    <span class="muted">Status ${item.status} • ${item.time}</span>
+                    <button class="ghost" type="button" data-index="${history.length - 1 - index}">Load response</button>
+                `;
+                historyList.appendChild(wrapper);
+            });
+        };
+
+        const simulateRequest = (request) => {
+            const key = `${request.method} ${request.endpoint}`;
+            const handler = mockHandlers[key];
+            const latency = Math.floor(Math.random() * 400) + 200;
+
+            setStatus("Working", "Sending request...", "warn");
+            responseOutput.textContent = formatJson({
+                status: "pending",
+                endpoint: request.endpoint,
+                method: request.method
+            });
+
+            setTimeout(() => {
+                if (!handler) {
+                    const errorResponse = {
+                        status: 404,
+                        body: {
+                            error: "Endpoint not found",
+                            hint: "Try one of the example endpoints."
+                        }
+                    };
+                    updateResponse(request, errorResponse, latency);
+                    return;
+                }
+
+                const response = handler({
+                    name: request.name,
+                    region: request.region,
+                    payload: request.payload,
+                    latency
+                });
+
+                updateResponse(request, response, latency);
+            }, latency);
+        };
+
+        const updateResponse = (request, response, latency) => {
+            const tone = response.status >= 400 ? "warn" : "ok";
+            setStatus(`Status ${response.status}`, `Completed in ${latency}ms`, tone);
+            responseOutput.textContent = formatJson(response.body);
+
+            history.push({
+                method: request.method,
+                endpoint: request.endpoint,
+                status: response.status,
+                time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                response: response.body
+            });
+
+            renderHistory();
+        };
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const method = methodInput.value;
+            const endpoint = endpointInput.value;
+            const name = nameInput.value.trim();
+            const region = regionInput.value.trim();
+
+            let payload = null;
+            if (payloadInput.value.trim()) {
+                try {
+                    payload = JSON.parse(payloadInput.value);
+                } catch (error) {
+                    setStatus("Invalid JSON", "Fix the payload and try again.", "warn");
+                    responseOutput.textContent = formatJson({
+                        error: "Invalid JSON",
+                        message: "Payload must be valid JSON."
+                    });
+                    return;
+                }
+            } else {
+                payload = {
+                    note: "No payload provided",
+                    sample: true
+                };
+            }
+
+            simulateRequest({
+                method,
+                endpoint,
+                name,
+                region,
+                payload
+            });
+        });
+
+        fillExample.addEventListener("click", () => {
+            payloadInput.value = formatJson(examplePayload);
+        });
+
+        historyList.addEventListener("click", (event) => {
+            const button = event.target.closest("button[data-index]");
+            if (!button) return;
+            const index = Number(button.dataset.index);
+            const item = history[index];
+            if (!item) return;
+
+            setStatus(`Status ${item.status}`, "Loaded from history", item.status >= 400 ? "warn" : "ok");
+            responseOutput.textContent = formatJson(item.response);
+        });
+
+        renderHistory();
+    </script>
+</body>
+</html>
