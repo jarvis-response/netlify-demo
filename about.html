@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netlify Demo | About</title>
+    <style>
+        :root {
+            --bg-1: #667eea;
+            --bg-2: #764ba2;
+            --ink: #ffffff;
+            --ink-soft: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.12);
+            --card-border: rgba(255, 255, 255, 0.22);
+            --accent: #fbd38d;
+            --shadow: 0 18px 36px rgba(20, 10, 40, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+            color: var(--ink);
+            background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(14px);
+            background: rgba(30, 18, 55, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+        }
+
+        .brand {
+            font-weight: 700;
+            letter-spacing: 0.4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a {
+            padding: 0.4rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 4rem;
+            width: 100%;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.18);
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 3.2vw, 3.4rem);
+            margin: 0.75rem 0;
+            line-height: 1.05;
+        }
+
+        .hero p {
+            color: var(--ink-soft);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .hero-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.75rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-card h3 {
+            margin-bottom: 0.6rem;
+        }
+
+        .hero-card ul {
+            list-style: none;
+            display: grid;
+            gap: 0.6rem;
+            color: var(--ink-soft);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .muted {
+            color: var(--ink-soft);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 1.4rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 999px;
+            padding: 0.2rem 0.75rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 3rem 0;
+        }
+
+        .contact {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .contact-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 18px;
+            padding: 1.5rem;
+        }
+
+        .contact-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .pill {
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 999px;
+            padding: 0.45rem 1rem;
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--ink);
+            font: inherit;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .pill:hover,
+        .pill:focus {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .copy-status {
+            font-size: 0.85rem;
+            color: var(--accent);
+            min-height: 1.2rem;
+        }
+
+        @media (max-width: 720px) {
+            .nav-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <nav class="nav">
+            <div class="nav-inner">
+                <div class="brand">Netlify Demo</div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="travel-dashboard.html">Travel Dashboard</a>
+                    <a href="business-card.html">Business Card</a>
+                    <a href="api-playground.html">API Playground</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <section class="hero">
+                <div>
+                    <span class="badge">About this demo</span>
+                    <h1>Built to showcase Netlify-ready proof of concepts.</h1>
+                    <p>
+                        This project is a compact set of UI experiments that demonstrate how fast, friendly
+                        frontend pages can ship on Netlify with nothing more than vanilla HTML, CSS, and
+                        JavaScript. Each POC highlights a different use case while staying cohesive under the
+                        same visual system.
+                    </p>
+                </div>
+                <div class="hero-card">
+                    <h3>What makes it useful</h3>
+                    <ul>
+                        <li>Lightweight, framework-free pages that deploy instantly.</li>
+                        <li>Reusable UI patterns for dashboards, cards, and blogs.</li>
+                        <li>Clear navigation that ties every POC together.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <section>
+                <h2 class="section-title">The 5 POCs</h2>
+                <p class="muted">A quick tour of the pages already live in this demo build.</p>
+                <div class="grid" style="margin-top: 1.5rem;">
+                    <div class="card">
+                        <span class="tag">POC 01</span>
+                        <h3>Table of Contents</h3>
+                        <p class="muted">The home page that routes every visitor to the right proof of concept fast.</p>
+                    </div>
+                    <div class="card">
+                        <span class="tag">POC 02</span>
+                        <h3>Travel Dashboard</h3>
+                        <p class="muted">A mini dashboard with world time, weather cues, and geolocation details.</p>
+                    </div>
+                    <div class="card">
+                        <span class="tag">POC 03</span>
+                        <h3>Digital Business Card</h3>
+                        <p class="muted">A sleek personal profile with social links and location-aware context.</p>
+                    </div>
+                    <div class="card">
+                        <span class="tag">POC 04</span>
+                        <h3>API Playground</h3>
+                        <p class="muted">A sandbox for testing Netlify-style endpoints and responses in the UI.</p>
+                    </div>
+                    <div class="card">
+                        <span class="tag">POC 05</span>
+                        <h3>Blog</h3>
+                        <p class="muted">A modern editorial layout showcasing posts, tags, and featured content.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <section class="contact">
+                <div>
+                    <h2 class="section-title">Get in touch</h2>
+                    <p class="muted">
+                        Want to reuse any of these patterns for a real Netlify deployment? Reach out and we can
+                        tailor the set for your team or product demo.
+                    </p>
+                </div>
+                <div class="contact-card">
+                    <p><strong>Email</strong></p>
+                    <p class="muted" id="contact-email">demo-team@netlify-poc.io</p>
+                    <div class="contact-actions">
+                        <a class="pill" href="mailto:demo-team@netlify-poc.io">Send an email</a>
+                        <button class="pill" type="button" id="copy-email">Copy address</button>
+                    </div>
+                    <div class="copy-status" id="copy-status" aria-live="polite"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const copyButton = document.getElementById("copy-email");
+        const emailText = document.getElementById("contact-email");
+        const status = document.getElementById("copy-status");
+
+        copyButton.addEventListener("click", async () => {
+            try {
+                await navigator.clipboard.writeText(emailText.textContent.trim());
+                status.textContent = "Email copied to clipboard.";
+            } catch (error) {
+                status.textContent = "Unable to copy. Please highlight and copy manually.";
+            }
+        });
+    </script>
+</body>
+</html>
