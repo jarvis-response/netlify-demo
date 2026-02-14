@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Netlify Demo | Minimalist Blog</title>
+    <style>
+        :root {
+            --bg-1: #667eea;
+            --bg-2: #764ba2;
+            --ink: #ffffff;
+            --ink-soft: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.12);
+            --card-border: rgba(255, 255, 255, 0.22);
+            --accent: #fbd38d;
+            --shadow: 0 20px 40px rgba(20, 10, 40, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+            color: var(--ink);
+            background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(14px);
+            background: rgba(30, 18, 55, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+        }
+
+        .brand {
+            font-weight: 700;
+            letter-spacing: 0.4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a {
+            padding: 0.4rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 4rem;
+            width: 100%;
+        }
+
+        .hero {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.18);
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.3rem, 3.2vw, 3.2rem);
+            line-height: 1.05;
+        }
+
+        .hero p {
+            color: var(--ink-soft);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            max-width: 680px;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .search {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(255, 255, 255, 0.18);
+            padding: 0.6rem 1rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .search input {
+            border: none;
+            background: transparent;
+            color: var(--ink);
+            outline: none;
+            font-size: 0.95rem;
+            width: min(260px, 60vw);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(240px, 1fr) minmax(280px, 2fr);
+            gap: 1.5rem;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .panel h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .post-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .post-card {
+            padding: 1rem 1.1rem;
+            border-radius: 16px;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .post-card:hover,
+        .post-card:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.16);
+            transform: translateY(-2px);
+        }
+
+        .post-card.active {
+            border-color: rgba(251, 211, 141, 0.7);
+            background: rgba(251, 211, 141, 0.18);
+        }
+
+        .post-card h3 {
+            font-size: 1.05rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--ink-soft);
+            margin-bottom: 0.45rem;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            font-size: 0.75rem;
+        }
+
+        .excerpt {
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+            line-height: 1.4;
+        }
+
+        .content-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-title {
+            font-size: 1.8rem;
+        }
+
+        .content-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+
+        .content {
+            color: var(--ink-soft);
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .content h1,
+        .content h2,
+        .content h3 {
+            color: var(--ink);
+            margin: 1rem 0 0.5rem;
+        }
+
+        .content p {
+            margin-bottom: 0.9rem;
+        }
+
+        .content ul {
+            margin: 0.6rem 0 1rem 1.2rem;
+        }
+
+        .content code {
+            font-family: "JetBrains Mono", "Courier New", monospace;
+            font-size: 0.9em;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 0.1rem 0.3rem;
+            border-radius: 6px;
+        }
+
+        .content pre {
+            background: rgba(15, 10, 35, 0.6);
+            padding: 1rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 0.8rem 0 1rem;
+        }
+
+        .content pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .empty {
+            color: var(--ink-soft);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .nav-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .search input {
+                width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <nav class="nav">
+            <div class="nav-inner">
+                <div class="brand">Netlify Demo</div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="travel-dashboard.html">Travel Dashboard</a>
+                    <a href="business-card.html">Business Card</a>
+                    <a href="api-playground.html">API Playground</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <section class="hero">
+                <div>
+                    <span class="badge">Minimalist Blog POC</span>
+                    <h1>Notes from the Build Room</h1>
+                    <p>
+                        A minimalist blog proof of concept that stores markdown-style posts in JavaScript,
+                        supports instant search, and renders clean reading experiences with zero backend.
+                    </p>
+                </div>
+                <div class="toolbar">
+                    <label class="search" for="search-input">
+                        <span>Search</span>
+                        <input id="search-input" type="text" placeholder="Filter by title, tag, or content" />
+                    </label>
+                    <div id="result-count" class="meta">Showing 0 posts</div>
+                </div>
+            </section>
+
+            <section class="layout">
+                <div class="panel">
+                    <h2>Latest Posts</h2>
+                    <div id="post-list" class="post-list"></div>
+                    <div id="empty-state" class="empty" hidden>No posts match that search yet.</div>
+                </div>
+                <div class="panel">
+                    <div id="post-detail"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const posts = [
+            {
+                id: "build-notes",
+                title: "Shipping a POC in a Weekend",
+                date: "2026-01-18",
+                tags: ["process", "velocity", "notes"],
+                content: `# Shipping a POC in a Weekend\n\nWe set a simple rule: **ship something demo-able every 12 hours**.\n\n## What worked\n- Commit small, review fast.\n- Treat design as a product, not a garnish.\n- Keep the docs short and actionable.\n\n## Tiny checklist\n1. Align on outcome, not features.\n2. Build a thin UI shell.\n3. Add data last.\n\n\`\`\`js\nconst launch = (idea) => ({ status: "live", idea });\n\`\`\`\n\nTakeaway: if it reads well, it will likely *demo well*.`
+            },
+            {
+                id: "gradient-language",
+                title: "Designing a Calm Purple Gradient",
+                date: "2026-01-29",
+                tags: ["design", "color", "ui"],
+                content: `# Designing a Calm Purple Gradient\n\nThe palette here uses two anchors and a single warm accent.\n\n## Formula\n- Start with \`#667eea\` for the upper-left hue.\n- Shift deeper to \`#764ba2\` for depth.\n- Add \`#fbd38d\` to warm up buttons and tags.\n\n## Micro details\n- A little blur makes the card feel \"glassy.\"\n- Use low-contrast borders to keep it minimal.\n\nThe goal: *soft glow, no neon*.`
+            },
+            {
+                id: "markdown-mvp",
+                title: "A Minimal Markdown Renderer in 30 Lines",
+                date: "2026-02-02",
+                tags: ["javascript", "markdown", "frontend"],
+                content: `# A Minimal Markdown Renderer in 30 Lines\n\nMarkdown can be humble and still powerful. The trick is to parse just enough:\n\n- Headings (\`#\` and \`##\`)\n- Lists (\`-\` bullets)\n- \`inline code\` and **bold** text\n\n## Pseudo-approach\n1. Escape HTML first.\n2. Convert fenced blocks.\n3. Wrap paragraphs last.\n\nSmall renderers keep the UI snappy and the mental model clear.`
+            },
+            {
+                id: "roadmap",
+                title: "Next Steps for the Demo Suite",
+                date: "2026-02-10",
+                tags: ["roadmap", "product", "planning"],
+                content: `# Next Steps for the Demo Suite\n\nHere are the next experiments queued up:\n\n- Add an \"About\" page with a quick project brief.\n- Wrap every POC in a consistent performance panel.\n- Document the Netlify deploy flow in one page.\n\n## Goal\nMake every demo feel \"ready-to-ship\" without extra tooling.`
+            }
+        ];
+
+        const listEl = document.getElementById("post-list");
+        const detailEl = document.getElementById("post-detail");
+        const searchInput = document.getElementById("search-input");
+        const countEl = document.getElementById("result-count");
+        const emptyEl = document.getElementById("empty-state");
+
+        const escapeHtml = (value) =>
+            value
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+
+        const renderMarkdown = (markdown) => {
+            let html = escapeHtml(markdown.trim());
+
+            html = html.replace(/```([\s\S]*?)```/g, (match, code) => {
+                return `<pre><code>${code.trim()}</code></pre>`;
+            });
+
+            html = html.replace(/^###\s+(.*)$/gm, "<h3>$1</h3>");
+            html = html.replace(/^##\s+(.*)$/gm, "<h2>$1</h2>");
+            html = html.replace(/^#\s+(.*)$/gm, "<h1>$1</h1>");
+
+            html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+            html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+            html = html.replace(/_(.*?)_/g, "<em>$1</em>");
+
+            const lines = html.split("\n");
+            const output = [];
+            let inList = false;
+
+            lines.forEach((line) => {
+                if (line.startsWith("- ")) {
+                    if (!inList) {
+                        inList = true;
+                        output.push("<ul>");
+                    }
+                    output.push(`<li>${line.slice(2)}</li>`);
+                    return;
+                }
+
+                if (inList) {
+                    output.push("</ul>");
+                    inList = false;
+                }
+
+                if (line.trim() === "") {
+                    return;
+                }
+
+                if (line.startsWith("<h1>") || line.startsWith("<h2>") || line.startsWith("<h3>") || line.startsWith("<pre>")) {
+                    output.push(line);
+                } else {
+                    output.push(`<p>${line}</p>`);
+                }
+            });
+
+            if (inList) {
+                output.push("</ul>");
+            }
+
+            return output.join("\n");
+        };
+
+        const formatDate = (value) => {
+            const date = new Date(`${value}T00:00:00`);
+            return date.toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            });
+        };
+
+        const renderTags = (tags) => tags.map((tag) => `<span class="tag">${tag}</span>`).join("");
+
+        const getExcerpt = (content) => {
+            const plain = content
+                .replace(/```[\s\S]*?```/g, "")
+                .replace(/[#*_`>-]/g, "")
+                .replace(/\s+/g, " ")
+                .trim();
+            return plain.length > 120 ? `${plain.slice(0, 120)}...` : plain;
+        };
+
+        const renderList = (data, activeId) => {
+            listEl.innerHTML = "";
+            data.forEach((post) => {
+                const card = document.createElement("article");
+                card.className = `post-card${post.id === activeId ? " active" : ""}`;
+                card.tabIndex = 0;
+                card.dataset.id = post.id;
+                card.innerHTML = `
+                    <h3>${post.title}</h3>
+                    <div class="meta">
+                        <span>${formatDate(post.date)}</span>
+                        ${renderTags(post.tags)}
+                    </div>
+                    <p class="excerpt">${getExcerpt(post.content)}</p>
+                `;
+                listEl.appendChild(card);
+            });
+        };
+
+        const renderDetail = (post) => {
+            if (!post) {
+                detailEl.innerHTML = "<p class=\"empty\">Select a post to read.</p>";
+                return;
+            }
+
+            detailEl.innerHTML = `
+                <div class="content-header">
+                    <span class="meta">${formatDate(post.date)}</span>
+                    <h2 class="content-title">${post.title}</h2>
+                    <div class="content-tags">${renderTags(post.tags)}</div>
+                </div>
+                <div class="content">${renderMarkdown(post.content)}</div>
+            `;
+        };
+
+        const applyFilter = () => {
+            const query = searchInput.value.trim().toLowerCase();
+            const filtered = posts.filter((post) => {
+                const haystack = `${post.title} ${post.tags.join(" ")} ${post.content}`.toLowerCase();
+                return haystack.includes(query);
+            });
+
+            countEl.textContent = `Showing ${filtered.length} post${filtered.length === 1 ? "" : "s"}`;
+            emptyEl.hidden = filtered.length !== 0;
+
+            const active = filtered[0] || null;
+            renderList(filtered, active ? active.id : "");
+            renderDetail(active);
+        };
+
+        listEl.addEventListener("click", (event) => {
+            const card = event.target.closest(".post-card");
+            if (!card) return;
+            const post = posts.find((item) => item.id === card.dataset.id);
+            renderList(getFilteredPosts(), post ? post.id : "");
+            renderDetail(post);
+        });
+
+        listEl.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter") return;
+            const card = event.target.closest(".post-card");
+            if (!card) return;
+            const post = posts.find((item) => item.id === card.dataset.id);
+            renderList(getFilteredPosts(), post ? post.id : "");
+            renderDetail(post);
+        });
+
+        const getFilteredPosts = () => {
+            const query = searchInput.value.trim().toLowerCase();
+            return posts.filter((post) => {
+                const haystack = `${post.title} ${post.tags.join(" ")} ${post.content}`.toLowerCase();
+                return haystack.includes(query);
+            });
+        };
+
+        searchInput.addEventListener("input", () => {
+            const filtered = getFilteredPosts();
+            countEl.textContent = `Showing ${filtered.length} post${filtered.length === 1 ? "" : "s"}`;
+            emptyEl.hidden = filtered.length !== 0;
+            const active = filtered[0] || null;
+            renderList(filtered, active ? active.id : "");
+            renderDetail(active);
+        });
+
+        applyFilter();
+    </script>
+</body>
+</html>
