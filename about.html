@@ -310,42 +310,7 @@
                 </div>
             </section>
 
-            <div class="divider"></div>
-
-            <section class="contact">
-                <div>
-                    <h2 class="section-title">Get in touch</h2>
-                    <p class="muted">
-                        Want to reuse any of these patterns for a real Netlify deployment? Reach out and we can
-                        tailor the set for your team or product demo.
-                    </p>
-                </div>
-                <div class="contact-card">
-                    <p><strong>Email</strong></p>
-                    <p class="muted" id="contact-email">demo-team@netlify-poc.io</p>
-                    <div class="contact-actions">
-                        <a class="pill" href="mailto:demo-team@netlify-poc.io">Send an email</a>
-                        <button class="pill" type="button" id="copy-email">Copy address</button>
-                    </div>
-                    <div class="copy-status" id="copy-status" aria-live="polite"></div>
-                </div>
-            </section>
         </main>
     </div>
-
-    <script>
-        const copyButton = document.getElementById("copy-email");
-        const emailText = document.getElementById("contact-email");
-        const status = document.getElementById("copy-status");
-
-        copyButton.addEventListener("click", async () => {
-            try {
-                await navigator.clipboard.writeText(emailText.textContent.trim());
-                status.textContent = "Email copied to clipboard.";
-            } catch (error) {
-                status.textContent = "Unable to copy. Please highlight and copy manually.";
-            }
-        });
-    </script>
 </body>
 </html>
