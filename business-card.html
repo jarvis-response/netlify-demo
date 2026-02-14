@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Netlify Demo | Digital Business Card</title>
+    <style>
+        :root {
+            --bg-1: #667eea;
+            --bg-2: #764ba2;
+            --ink: #ffffff;
+            --ink-soft: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.12);
+            --card-border: rgba(255, 255, 255, 0.22);
+            --accent: #fbd38d;
+            --shadow: 0 20px 40px rgba(20, 10, 40, 0.25);
+            --success: #b5f2d5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+            color: var(--ink);
+            background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(14px);
+            background: rgba(30, 18, 55, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+        }
+
+        .brand {
+            font-weight: 700;
+            letter-spacing: 0.4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a {
+            padding: 0.4rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 4rem;
+            width: 100%;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.18);
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 3.6vw, 3.4rem);
+            margin: 0.75rem 0;
+            line-height: 1.05;
+        }
+
+        .hero p {
+            color: var(--ink-soft);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 22px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            display: grid;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: "";
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 160px;
+            height: 160px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+        }
+
+        .profile {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .name {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .title {
+            font-size: 1rem;
+            color: var(--ink-soft);
+        }
+
+        .location {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.14);
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .dot.active {
+            background: var(--success);
+        }
+
+        .links {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .link-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 1rem;
+            border-radius: 14px;
+            transition: transform 0.2s ease, border 0.2s ease;
+        }
+
+        .link-row:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.45);
+        }
+
+        .link-label {
+            font-weight: 600;
+        }
+
+        .link-meta {
+            color: var(--ink-soft);
+            font-size: 0.9rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--ink);
+            padding: 0.55rem 1rem;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .meta {
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+        }
+
+        footer {
+            padding: 2rem 1.5rem 3rem;
+            text-align: center;
+            color: var(--ink-soft);
+        }
+
+        @media (max-width: 720px) {
+            .nav-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <nav class="nav">
+            <div class="nav-inner">
+                <div class="brand">Netlify Demo</div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="travel-dashboard.html">Travel Dashboard</a>
+                    <a href="business-card.html">Business Card</a>
+                    <a href="api-playground.html">API Playground</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <section class="hero">
+                <div>
+                    <span class="badge">Digital Business Card • POC 02</span>
+                    <h1>Louis' digital business card, always up to date.</h1>
+                    <p>
+                        Share contact links, highlight key channels, and show your current city using browser
+                        geolocation with reverse geocoding.
+                    </p>
+                </div>
+                <div class="card" aria-live="polite">
+                    <div class="profile">
+                        <div class="name">Louis</div>
+                        <div class="title">Product + UX • Netlify POC Builder</div>
+                        <div class="location" id="location-pill">
+                            <span class="dot" id="location-dot"></span>
+                            <span id="location-text">Currently in: Locating…</span>
+                        </div>
+                        <div class="meta" id="location-meta">Waiting on location permission.</div>
+                    </div>
+
+                    <div class="links">
+                        <a class="link-row" href="https://example.com" target="_blank" rel="noreferrer">
+                            <div>
+                                <div class="link-label">Website</div>
+                                <div class="link-meta">louis.example.com</div>
+                            </div>
+                            <span>Visit →</span>
+                        </a>
+                        <a class="link-row" href="https://github.com/example" target="_blank" rel="noreferrer">
+                            <div>
+                                <div class="link-label">GitHub</div>
+                                <div class="link-meta">github.com/example</div>
+                            </div>
+                            <span>View →</span>
+                        </a>
+                        <a class="link-row" href="https://linkedin.com/in/example" target="_blank" rel="noreferrer">
+                            <div>
+                                <div class="link-label">LinkedIn</div>
+                                <div class="link-meta">linkedin.com/in/example</div>
+                            </div>
+                            <span>Connect →</span>
+                        </a>
+                        <a class="link-row" href="https://twitter.com/example" target="_blank" rel="noreferrer">
+                            <div>
+                                <div class="link-label">X / Twitter</div>
+                                <div class="link-meta">@example</div>
+                            </div>
+                            <span>Follow →</span>
+                        </a>
+                    </div>
+
+                    <div class="actions">
+                        <button class="button" id="request-location">Share Location</button>
+                        <button class="button" id="refresh-location">Refresh City</button>
+                    </div>
+
+                    <div class="meta">Reverse geocoding powered by OpenStreetMap Nominatim.</div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div>Use this page as a shareable digital business card during demos and events.</div>
+        </footer>
+    </div>
+
+    <script>
+        const locationText = document.getElementById("location-text");
+        const locationMeta = document.getElementById("location-meta");
+        const locationDot = document.getElementById("location-dot");
+        const requestLocationButton = document.getElementById("request-location");
+        const refreshLocationButton = document.getElementById("refresh-location");
+
+        const setLocationStatus = (active, text, meta) => {
+            locationDot.classList.toggle("active", active);
+            locationText.textContent = text;
+            locationMeta.textContent = meta;
+        };
+
+        const reverseGeocode = async (lat, lon) => {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+            const response = await fetch(url, {
+                headers: {
+                    "Accept": "application/json",
+                },
+            });
+            if (!response.ok) {
+                throw new Error("Reverse geocoding failed");
+            }
+            return response.json();
+        };
+
+        const formatCity = (data) => {
+            const address = data.address || {};
+            return (
+                address.city ||
+                address.town ||
+                address.village ||
+                address.county ||
+                address.state ||
+                "Unknown"
+            );
+        };
+
+        const handleSuccess = async (position) => {
+            const { latitude, longitude } = position.coords;
+            setLocationStatus(true, "Currently in: Locating…", `Lat ${latitude.toFixed(3)}, Lon ${longitude.toFixed(3)}`);
+
+            try {
+                const data = await reverseGeocode(latitude, longitude);
+                const city = formatCity(data);
+                const country = data.address?.country || "";
+                const label = country ? `${city}, ${country}` : city;
+                setLocationStatus(true, `Currently in: ${label}`, `Lat ${latitude.toFixed(3)}, Lon ${longitude.toFixed(3)}`);
+            } catch (error) {
+                setLocationStatus(false, "Currently in: Unknown", "Reverse geocoding unavailable.");
+            }
+        };
+
+        const handleError = (error) => {
+            setLocationStatus(false, "Currently in: Unknown", error.message || "Location access denied.");
+        };
+
+        const requestLocation = () => {
+            if (!navigator.geolocation) {
+                setLocationStatus(false, "Currently in: Unknown", "Geolocation is not supported in this browser.");
+                return;
+            }
+
+            setLocationStatus(false, "Currently in: Locating…", "Requesting permission…");
+            navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
+                enableHighAccuracy: true,
+                timeout: 10000,
+            });
+        };
+
+        requestLocationButton.addEventListener("click", requestLocation);
+        refreshLocationButton.addEventListener("click", requestLocation);
+
+        requestLocation();
+    </script>
+</body>
+</html>
